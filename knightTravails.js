@@ -7,48 +7,61 @@ class Node {
   }
 }
 
-function knightMoves(start, end, moves = []) {
+function knightMoves(start, end) {
+  if (start[0] < 0 || start[1] < 0 || start[0] > 7 || start[1] > 7) {
+    throw new Error('Please provide a valid starting value');
+  }
+  if (end[0] < 0 || end[1] < 0 || end[0] > 7 || end[1] > 7) {
+    throw new Error('Please provide a valid ending value');
+  }
+
+  let result = [];
   let visited = [];
   let queue = [];
-  queue.push(start);
-  console.log(queue)
+  queue.push(new Node(start));
 
+  while (queue.length) {
+    let currentMove = queue.shift();
+    const x = currentMove.move[0];
+    const y = currentMove.move[1];
 
+    let neighbors = [
+      [x + 2, y + 1],
+      [x + 2, y - 1],
+      [x - 2, y + 1],
+      [x - 2, y - 1],
+      [x + 1, y + 2],
+      [x - 1, y + 2],
+      [x + 1, y - 2],
+      [x - 1, y - 2]
+    ]
+    if (neighbors.length !== 0) {
+        neighbors = neighbors.filter(move => move[0] >= 0 && move[0] <= 7 && move[1] >= 0 && move[1] <= 7);
+        neighbors = neighbors.filter(neighbor => {
+          return !visited.some(obj => obj.move[0] === neighbor[0] && obj.move[1] === neighbor[1]);
+        })
+      }
 
-  // while (queue.length !== 0) {
-  //   let currentMove = new Node(queue[0]);
-  //   console.log(currentMove);
-  //   const x = currentMove.move[0];
-  //   const y = currentMove.move[1];
+    if (!(visited.some(obj => obj === currentMove))) {
+      visited.push(currentMove);
 
-  //   visited.push([x, y]);
-  //   queue.shift();
+      for (const neighbor of neighbors) {
+        queue.push(new Node(neighbor, currentMove));
+      }
+    }
 
-  //   queue.push(new Node([x + 2, y + 1], currentMove),
-  //     new Node([x + 2, y - 1], currentMove),
-  //     new Node([x - 2, y + 1], currentMove),
-  //     new Node([x - 2, y - 1], currentMove),
-  //     new Node([x + 1, y + 2], currentMove),
-  //     new Node([x - 1, y + 2], currentMove),
-  //     new Node([x + 1, y - 2], currentMove),
-  //     new Node([x - 1, y - 2], currentMove)
-  //   );
-  //   for (let i = 0; i < queue.length; i++) {
-  //     if (queue[i].move[0] < 0 || queue[i].move[0] > 7 || queue[i].move[1] < 0 || queue[i].move[1] > 7) {
-  //       queue.splice(i, 1);
-  //       i--;
-  //     }
-  //     if (visited.includes(queue[i])) {
-  //       queue.splice(i, 1);
-  //       i--;
-  //     }
-  //   }
-
-  //   if (currentMove.move === end) {
-  //     moves = currentMove;
-  //     break;
-  //   }
-  // }
+    if (neighbors.some(move => move[0] === end[0] && move[1] === end[1])) {
+      while (currentMove !== null) {
+        result.unshift(currentMove.move);
+        currentMove = currentMove.parent;
+      }
+      result.push(end);
+      break;
+    }
+  }
+  return result;
 }
 
-knightMoves([0, 0], [3, 3])
+console.log(knightMoves([3, 3], [7, 7]));
+
+
