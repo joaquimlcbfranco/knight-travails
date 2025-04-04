@@ -16,6 +16,11 @@ function knightMoves(start, end) {
   }
 
   let result = [];
+  if (start[0] === end[0] && start[1] === end[1]) {
+    result.push(start);
+    return result;
+  }
+
   let visited = [];
   let queue = [];
   queue.push(new Node(start));
@@ -35,12 +40,11 @@ function knightMoves(start, end) {
       [x + 1, y - 2],
       [x - 1, y - 2]
     ]
-    if (neighbors.length !== 0) {
-        neighbors = neighbors.filter(move => move[0] >= 0 && move[0] <= 7 && move[1] >= 0 && move[1] <= 7);
-        neighbors = neighbors.filter(neighbor => {
-          return !visited.some(obj => obj.move[0] === neighbor[0] && obj.move[1] === neighbor[1]);
-        })
-      }
+
+    neighbors = neighbors.filter(move => move[0] >= 0 && move[0] <= 7 && move[1] >= 0 && move[1] <= 7);
+    neighbors = neighbors.filter(neighbor => {
+      return !visited.some(obj => obj.move[0] === neighbor[0] && obj.move[1] === neighbor[1]);
+    });
 
     if (!(visited.some(obj => obj === currentMove))) {
       visited.push(currentMove);
@@ -62,6 +66,6 @@ function knightMoves(start, end) {
   return result;
 }
 
-console.log(knightMoves([3, 3], [7, 7]));
+console.log(knightMoves([0, 0], [3, 3]));
 
 
